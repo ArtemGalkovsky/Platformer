@@ -5,6 +5,12 @@
 	<title>First Project</title>
 	<link rel="stylesheet" href="CSS/style.css">
 	<script type="text/javascript" src="eel.js"></script>
+	<script>
+		eel.get_map_file("web/JS/maps.map")().then(file => {
+			console.log(window.getFile, "wgf")
+			window.getFile(file)
+		})
+	</script>
 	<script type="module" src="JS/app.js"></script>
 </head>
 <body>

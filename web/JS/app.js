@@ -1,36 +1,27 @@
 import {canv, ctx, draw} from "./canvas.js"
 import Platform from "./classes.js"
+//import { FILE } from "./link.js"
 
-var MAP = []
-var Levels
+//var MAP
 
-function getMapFile () {
-	console.log('get')
-	eel.get_map_file("web/JS/maps.map")().then(file =>{
-		mapDecoder(file, {}, canv.width, canv.height)
-	})
-	//mapDecoder(mapDecoder(file.then(file => {}), {}, canv.width, canv.height))
-	//console.log(file.then(value => {get})
-	//console.log('End')
-	//file = file.then(file => {
-		//MAP = getMapFile(Array.from(file))
-	//	console.log('FILE GET', file)
-		//return file
-	//})
-	//console.log(file, "f")
-	//console.log(file["[[PromiseResult]]"])
+function getFile (file, type) {
+	console.log(file, "F")
+	//MAP = file
 }
 
-//let file = eel.get_map_file("web/JS/maps.map")()
-//file.then(file => {
-//	MAP = getMapFile(Array.from(file))
-//	console.log('FILE GET', MAP)
-//})
-getMapFile()
+window.getFile = getFile
 
-//console.log(MAP, "MAP")
+//console.log(MAP)
 
-// mapDecoder(MAP, {}, canv.width, canv.height)
+//console.log(FILE)
+
+//console.log(getFile("web/JS/maps.map"), "func")
+
+var Levels
+
+//let map = []
+
+//console.log(map, "map")
 
 function mapDecoder (mapFile, levelObject, levelWidth, levelHight) {
 	var row = 0
