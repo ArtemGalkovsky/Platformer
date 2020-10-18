@@ -1,19 +1,14 @@
-import {canv, render} from "./canvas.js"//draw} from "./canvas.js"
-import Platform from "./classes.js"
+import {canv, ctx, render, moveObj} from "./canvas.js"//draw} from "./canvas.js"
+import {Platform, Hero} from "./classes.js"
 
 var file 
 
 function getFile (file_) {
-	//console.log(file_, "F")
 	file = file_
-	//console.log(file, file_, "gml")
 	gameLoop()
-	//mapDecoder(file, Levels, canv.width, canv.height)
 }
 
 window.getFile = getFile
-
-//var Levels = {}
 
 function mapDecoder (mapFile, levelObject, levelWidth, levelHeight) {
 	let row = 0
@@ -26,73 +21,97 @@ function mapDecoder (mapFile, levelObject, levelWidth, levelHeight) {
 		}  else {
 			levelObject[level][row] = line.trim().split("")
 			levelObject[level][row].forEach((item, index) => {
-			//console.log(levelObject[level][row][item])
 				if (item === "-") {
-					//console.log(canv.height - Math.round(canv.height / row))
-					//console.log((canv.height / Object.keys(levelObject[level]).length), canv.height, Object.keys(levelObject[level]).length, "l", Object.keys(levelObject[level]), levelObject[level])
-					console.log(levelObject)
-					levelObject[level][row][index] = new Platform(0, 0, 30, 30, "#875300")//canv.height - Math.round(canv.height / row), 30, 30, "#875300")//400, 400, 800, 800, "#875300")
+					//console.log(levelObject)
+					levelObject[level][row][index] = new Platform(0, 0, 30, 30, "#875300")
 				}
 			})
 			row++
 		}
 	}
-
+	var w, h, x, y
 	Object.keys(levelObject).forEach(level => {
 		Object.keys(levelObject[level]).forEach(row => {
 			Object.keys(levelObject[level][row]).forEach(column => {
-				if (typeof levelObject[level][row][column] === "object") {//Platform) {
-					//console.log((canv.width / Object.keys(levelObject[level][row]).length) * levelObject[level][row].indexOf(column), "x", (canv.width / Object.keys(levelObject[level][row]).length), column)//levelObject[level][row].indexOf(column), column)
-					levelObject[level][row][column].y = (canv.height / Object.keys(levelObject[level]).length) * row 
-					levelObject[level][row][column].x = (canv.width / Object.keys(levelObject[level][row]).length) * column//levelObject[level][row].indexOf(column)
-					levelObject[level][row][column].height = canv.height / Object.keys(levelObject[level]).length//).length 
-					levelObject[level][row][column].width = canv.width / Object.keys(levelObject[level][row]).length
+				if (typeof levelObject[level][row][column] === "object") {
+					w = Math.round(canv.width / Object.keys(levelObject[level][row]).length)
+					h = Math.round(canv.height / Object.keys(levelObject[level]).length)
+					x = Math.round((canv.width / Object.keys(levelObject[level][row]).length) * column)
+					y = Math.round((canv.height / Object.keys(levelObject[level]).length) * row)
+					levelObject[level][row][column].y = y
+					levelObject[level][row][column].x =  x
+					levelObject[level][row][column].height = h 
+					levelObject[level][row][column].width = w
 
 				}
-				//console.log(levelObject[level][row][column], "c", typeof levelObject[level][row][column], (canv.height / Object.keys(levelObject[level]).length) * row, canv.height / Object.keys(levelObject[level]).length)//column, "c")
 			})
 		})
-		// Object.keys(level).forEach(row => {
-			// Object.keys
-		//})
 	})
-	//console.log(levelObject)
-	//Levels = levelObject
-	return levelObject
+
+	return [levelObject, w, h]//canv.width / Object.keys(levelObject[level][row]).length, )
 }
 
-// function render (map, ignoreObjects, level=null) {
-// 	console.log(map, map[level], level)
-// 	for (let row = 0; row < map[level].length; row++)
-// 	map[level][row].forEach(obj => {
-// 		ignoreObjects.includes(obj) ? undefined : obj.update()
-// 	})
-// 	//map.forEach(obj => {
-// 	//	ignoreObjects.includes(obj) ? undefined : obj.update()
-
-// 	//})
-// }
-
 var STATE = "start"
-var Levels
+//var Levels
 
-var level = 1
-
+// var level = 1
 var time = 0
-function gameLoop () {
-	if (STATE === "start") {
-		Levels = mapDecoder(file, {}, canv.width, canv.height)
-		STATE = "ingame"
-		console.log(Levels)
-	} else if (STATE === "ingame") {
-		//console.log("ingame")
-		render(Levels, ["0"], level)
-	}
 
-	setTimeout(gameLoop, 1000)
-	console.log("game")
-	//console.log('game')
-	//setTimeout(() => {requestAnimationFrame(gameLoop)}, )//16.6)
-	//console.log(STATE)
-	//console.log('game')
+//const hero = Hero(100, 100, )
+
+var level, Levels
+var hero
+var ignoreMove = []
+//var keysPressed = {}
+var keysPressed = {}
+
+function gameLoop () {
+
+	// document.onkeydown = event => {
+	// 		//console.log(event)
+	// 		keysPressed[event] = true
+	// }
+	// console.log(keysPressed, "l")
+	if (STATE === "start") {
+		//[Levels, hero] 
+		//console.log(
+		//document.onkeydown = document.onkeyup = event => {
+			//console.log(event)
+			//keysPressed[event.key] = true
+		//}//event => {moveObj(event, hero, ignoreMove)}//.addEventListener("keydown", event => {moveObj(event, hero, ignoreMove)})// console.log("Event")})
+		
+		document.addEventListener("keydown", event => {
+			keysPressed[event.key] = true
+		})//keysPressed[event.key] = true})
+
+		document.addEventListener("keyup", event => {
+			keysPressed[event.key] = false
+		})
+
+		level = 1
+		let W, H
+		[Levels, W, H] = mapDecoder(file, {}, canv.width, canv.height)//, "RETURN")
+		hero = new Hero(100, 700, W - W/5, H - H/5)
+		//console.log(Levels, hero)
+		//console.dir(Hero)
+		//console.log(Levels, W, H, "h")
+		STATE = "ingame"
+		//console.log(Levels)
+	} else if (STATE === "ingame") {
+		//console.log(Levels, level, "d")
+		ctx.clearRect(0, 0, canv.width, canv.height)
+		let platforms = render(Levels, ["0"], level)
+		//console.dir(hero)
+		//console(Platform)
+		//console.dir(hero)
+		ignoreMove = hero.collide(platforms, canv)
+		hero.move(moveObj(keysPressed, ignoreMove))//keysPressed, ignoreMove))
+		//console.log(keysPressed, "KP")
+		hero.draw(ctx)
+		
+	}
+	//console.log(keysPressed)
+	//console.log(keysPressed)
+	setTimeout(gameLoop, 16.6)//1000)
+	//console.log("game")
 }
